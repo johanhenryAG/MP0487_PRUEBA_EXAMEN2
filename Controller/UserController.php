@@ -33,7 +33,7 @@ class UserController
         $servername = "localhost";
         $username = "root";
         $password = "";
-        $dbname = "mp0487_daemgame";
+        $dbname = "daemgame";
 
         try {
             $this->conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -112,7 +112,7 @@ class UserController
         // Update password alredy created to hash
         $newHashedPassword = password_hash($password, PASSWORD_DEFAULT);
         try {
-            $updateStmt = $this->conn->prepare("UPDATE Usuario SET Password = :hashedPassword WHERE Email = :mail");
+            $updateStmt = $this->conn->prepare("UPDATE Usuario SET Contrasenya = :hashedPassword WHERE Email = :mail");
             $updateStmt->bindParam(':hashedPassword', $newHashedPassword);
             $updateStmt->bindParam(':mail', $mail);
             $updateStmt->execute();
@@ -223,7 +223,7 @@ class UserController
 
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         try {
-            $stmt = $this->conn->prepare("INSERT INTO Usuario (`Nombre`, `Apellido`, `Email`, `Password`, `Imagen`, `Administrador`) VALUES (:name, :surname, :mail, :password, :icon, :admin)");
+            $stmt = $this->conn->prepare("INSERT INTO Usuario (`Nombre`, `Apellido`, `Email`, `Contrasenya`, `Imagen`, `Administrador`) VALUES (:name, :surname, :mail, :password, :icon, :admin)");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':surname', $surname);
             $stmt->bindParam(':mail', $mail);
@@ -231,7 +231,6 @@ class UserController
             $stmt->bindParam(':icon', $file);
             $stmt->bindParam(':admin', $admin);
 
-            echo __LINE__;
             $stmt->execute();
             // Check if the query insert any data
             
@@ -258,7 +257,6 @@ class UserController
                 exit();
             }
         } catch (PDOException $e) {
-            echo __LINE__ . var_dump($e);
             $_SESSION['failMessage'] = ['message' => $e->getMessage(), 'context' => 'Fail Creating a New User'];
         }
     }
@@ -308,7 +306,7 @@ class UserController
         // Save in a variable the result of hash the password sended by the user
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
         try {
-            $stmt = $this->conn->prepare("UPDATE USUARIO SET Nombre = :name, Apellido = :surname, Password = :password WHERE Email = :mail");
+            $stmt = $this->conn->prepare("UPDATE USUARIO SET Nombre = :name, Apellido = :surname, Contrasenya = :password WHERE Email = :mail");
             $stmt->bindParam(':name', $name);
             $stmt->bindParam(':surname', $surname);
             $stmt->bindParam(':password', $hashPassword);
